@@ -105,7 +105,7 @@
 
                 <resources>
                     <resource>
-                        <directory>external/vrpn/build/java_vrpn</directory>
+                        <directory>external/vrpn/build/java_vrpn/Release</directory>
                         <includes>
                             <include>**/*.dll</include>
                         </includes>
