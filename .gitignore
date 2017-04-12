@@ -1,3 +1,4 @@
 external/vrpn/build/
 target/
 .*.swp
+*~
