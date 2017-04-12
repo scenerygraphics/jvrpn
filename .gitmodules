@@ -1,0 +1,3 @@
+[submodule "external/vrpn"]
+	path = external/vrpn
+	url = https://github.com/vrpn/vrpn
