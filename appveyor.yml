@@ -41,6 +41,7 @@ build:
   project: external\vrpn\build\vrpn.sln
 
 after_build:
+  - cd %APPVEYOR_BUILD_FOLDER%
   - mvn clean package
 
 on_success:
