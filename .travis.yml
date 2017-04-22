@@ -32,6 +32,7 @@ install:
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew unlink gnupg; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gnupg2; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then /usr/libexec/java_home -V; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "UPDATESTARTUPTTY" | gpg-connect-agent > /dev/null 2>&1; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export COMPILER=clang++-3.6; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=clang++-3.6; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CC=clang-3.6; fi
