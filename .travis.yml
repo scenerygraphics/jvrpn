@@ -1,0 +1,49 @@
+language: java
+env:
+  global:
+  - secure: p8Ej+SCOndNxl3IgGn4b9GgpFIFgJOroObndTx6acSOHxQId+T5nlSulsUvEPvMgyeOminTEkATHha09N0dMfD+0ZW1y1f+qE8lhwLbdvJDYu0bdMuScfnpjF4BJ/bkZLCk9B0i1yPaRAPKuvPjV/BXiiMJloazmGyeJtlvZ2BCtxFi9mU3yym6gQQRBK83U7SS/MytzPdComjSy2UC2Rv5B0lxaCpsWWQ+LXyrcQjWmkKIJvf2W6nvUcD1+J0xow6TbIfg0RkCZ4mkvB44hbFfA/SqWUQKgLA5lGRBbXW6NgfBCmzKZtYLzqVfJ1VoVV+6BJZPhkT//aaPAWwJIZ6YJzAhr2+VM5iStXIq74Xu/OItml6pf1Q7ts/DYbxZCTBL2ILxr/QsRaqwGY8jSknxgsaSe3EERibox1MPk/4bqbHIg7vvzoYnPHI5ABABrKXkKx8hUgxXnA1SsObllh1nPhJc8Mp74sQ2g21P0fgxvvUAxeye2C4mADalH2rpqyc3QRRfLOnsUG8C19KupCDDKvjy85T0x+RQ3uMril9htfqQBlMF7rvDNMOFXW3JvJueRJqf1bIcaeI7SlHQckmPPXwYz1Mo5RbxDVNXF21Kt70IbMiiXU/H4vpis0+a2IceUyG/EstTmAx2kY5FdcWScbF4PT2b/wtP577N09Vc=
+  - secure: YEcJGZ24Esv41DCyDu/FcDmNwFdRDH/SDiaWng0QBanmVuhm76Xdbu1tooU8k0VB/77i5TnIM4fRyTE11RihLJfnsaIAZqb6CF8gu/3L7obOdor+YH8xjWZVWV803+iIXd2AAkWwAQYq9wZ61GTJSa8vJFPqVY1vC+4esATls4VzzYUqWC/zp5/v90thYukhAwL/7osGZQ4f1vP3gTJEMzb2GWUXcQ2UDLUUpyB2A7+08PKSqgka7aGgUk7m/yQcyN8k5VMotFGYveGI5Svd5HH3y2ODwgoj1Q7D+7u7lZ+2oPm0Cg64iHcM+cl3BWY5t4BJYIYjf/MBFILIzY/gl5Bf7vBZgqnGTGK7NbW8WfPjo0ljHTJDNYElsmVEgpVFmQAHtYvVG57vNeV+Zv8Ct55BwQip4qV9UgKhV3p2id6K5F+hcDaxdjYB2QNWmFk7oTUz9hyZzW1YBKzFZk/d4JREmojLRP9urN/lZUTVZn4+VSqHXWo1E4rB5dLTKE1Y67MXNx1soNRh/BpS3M5Txg9kfo0NxoiF3vp4frZHdj0tTvbe4YlSBmVtBY41VmazQDIrcOgqTdtW4xCBa+6ZvW4iHNAXFSyNLBWzRUfSHFhOO9CSuhc/KlvZne50oajcM1TdHtx+Pd0trzs4cOS7mUGAXRhohE/wgj0p9L5H+mo=
+  - secure: UujavrR1sZsyhwrURgTmXmXMkbVav78ZA+zrpaDUpaaCcjtA7doe6ltd9pXDm29vT+HrNRZTG3+A5rNTLdE8S6CfJp2cCN0UpwpECa2DDpCvWexKCueDtvJR8S+dp/yLVKKdiqXyKMJSNsKlkwJiKCRtW1e6QxVRFMBNGbNadLQC037PMK6HlQr5um2rNEMXMDBZNYnhbJ1jBWzg+LAgXfYdXoUCDv3E53lo8W0pNFz/Sx2pyog2DrJLW1hg8Z9WICUSblqUdWFaMw8yYT/dNM3+XP3R/BkjC+/NHfWe66MnRaGuRSdECbLXfQEY0WrkMFefzKfrwfCOc6g3mVsE5oTbZC15yAEcQmuzgdN+iMae3QWnAbpXNoc+FZSA6ZM5XiouQOD14gDcrrU3te/F/D58w068EwIIbuv84hyJEpwpN60Ks1Uejkb0S4xcHGVTsH5+XNXAKYzH33ayjl50cTMhwXIgSg58VVFtgT5Kn+/9N+nU87WRnq+tT16x3vL/qKhwAVm9u38XirsBhpnUHr7Wn4zz1gV5ACFTORVFk+2fTAwJfUZ0iDFHYyAXxnVYedJW+EEZ7Mh5PbUd75Ma9BjuVlxZbO8gA5ZMaXJmQgk4vPGr36YIG4KN6l5Qg1LttP2dRw1IdwlMA3MMeMTFt5c94Lts3lKo8Wgo5EE4+TU=
+  - secure: tTttSwpaKlDHD5xXgCG3WsNK8rxg1Q/4CLVSFbZZ03AwS1hu3+PpdCsj/B+7WFTZPfWEDcV2oFexX9igVCVZfX5mNsOgG0lMFTV2Jpuj3AgnQoYcdIDrcRRRd1VLoSNbrc1Er4C1POs3Z1gLu7Y0ob58BKR0sXEy6Zxb0Hax/8wbPqdVkou/Ye/BMJm1z9AZWzaqs2jrd4PjO+wmY/h21IZy2P31MhCZMxbPTiRDVEBrM/DiPW3PCtGtdfuB//OxAlvE5qQPIWFxcUIzvVM9VQ9LB+cVLMzK8YM2/9h+4pSa3ro38M2vr5uH+koJT7zZmFnRbsk9gxYXLumlMjXZ2UpCOAfaoaEq8ta64Ws/2/kTZvcB2x4v/TWrCIfLrY5OAG2gfqNoYXTSdk00NwGdOQ085n9OoizK7VRHaTn8pm4uFTNssEJf7iiIAHb8DcpwJN2mH7xQIE2gkgBFGnOk6U0fCBkAp4X+v6yqnYTY6tceakGkCqbqjfxdNssP+/KZkG0A/2bkLVTOEvTzEvzfgGQYrK1clsyy1dyQYKhkpoFMXU6QU7LT/ucnSs9hvSFstCdXOsSBYoq8jslzW/mn7uf/5sRvUYG13SevcpOJ40RXQt1jEWD1+O3K5u29+dayp2AY2EcBySi+sjNeCKUxKwDTVLo8UhUNIKNRuUJxC6w=
+
+matrix:
+  include:
+  - os: linux
+    jdk: oraclejdk8
+    sudo: false
+    addons:
+      apt:
+        sources:
+        - sourceline: ppa:george-edison55/precise-backports
+        - sourceline: ppa:ubuntu-toolchain-r/test
+        - llvm-toolchain-precise-3.6
+        packages:
+        - cmake
+        - cmake-data
+        - clang-3.6
+        - gnupg2
+  - os: osx
+    osx_image: xcode7.3
+cache:
+  directories:
+  - "$HOME/.m2"
+install:
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew unlink gnupg; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gnupg2; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then /usr/libexec/java_home -V; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export COMPILER=clang++-3.6; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=clang++-3.6; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CC=clang-3.6; fi
+- git submodule init
+- git submodule update
+script:
+- mkdir -p external/vrpn/build
+- cd external/vrpn/build
+- cmake .. -DVRPN_BUILD_SERVERS=0
+- cmake --build . --config Release
+- cd ../../../
+- mvn package
+after_success:
+- deploy/before-deploy.sh
+- deploy/deploy.sh

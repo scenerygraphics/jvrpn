@@ -1,0 +1,52 @@
+clone_depth: 10
+platform: x64
+configuration: Release
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+  CERTIFICATE_KEY:
+    secure: Ky9iZmBUxU6Ae7dDFb8RLm03XrGvdVA0rYBoz7ree64=
+  GPG_KEY_NAME:
+    secure: pFZboraK8rHbi1ATX7ixxME/wkxZJzviH98ajt4zE6g=
+  GPG_PASSPHRASE:
+    secure: X/eC4bW8S7r0+vZ8KJnqu0VOLeshB8pk8h5F/2S1ArY=
+  OSSRH_USERNAME:
+    secure: q9o/GpgNFG7egrDNdcrXcv6WkC/5EepBl4DUveVpVg8=
+  OSSRH_PASSWORD:
+    secure: TuEw69O19kwhEg7g+WYO27gsVWImcnOZCmwkhy1uKsE=
+
+cache:
+  - C:\maven
+
+install:
+  - cmd: SET PATH=%JAVA_HOME%\bin;%PATH%
+  - cmd: SET MAVEN_OPTS=-Xmx2g
+  - cmd: SET JAVA_OPTS=-Xmx2g
+  - cmd: mvn --version
+  - cmd: java -version
+  - cmd: choco install swig
+  - ps: .\deploy\install-gnupg.ps1
+  - cmd: nuget install secure-file -ExcludeVersion
+  - cmd: SET PATH=C:\gnupg2;%PATH%
+  - ps: $env:Path += ";C:\gnupg2"
+
+before_build:
+  - git submodule init
+  - git submodule update
+  - mkdir external\vrpn\build
+  - cd external\vrpn\build
+  - cmake -G "Visual Studio 14 2015 Win64" .. -DVRPN_BUILD_SERVERS=0
+
+build:
+  project: external\vrpn\build\vrpn.sln
+
+after_build:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - mvn clean package
+
+on_success:
+  - cmd: SET PATH=C:\gnupg2;%PATH%
+  - ps: $env:Path += ";C:\gnupg2"
+  - cmd: if "%APPVEYOR_PULL_REQUEST_TITLE%" == "" if "%APPVEYOR_REPO_BRANCH%" == "master" secure-file\tools\secure-file -decrypt deploy\codesigning-appveyor.asc.enc -secret "%CERTIFICATE_KEY%"
+  - cmd: if "%APPVEYOR_PULL_REQUEST_TITLE%" == "" if "%APPVEYOR_REPO_BRANCH%" == "master" gpg2 --fast-import deploy/codesigning-appveyor.asc
+  - cmd: if "%APPVEYOR_PULL_REQUEST_TITLE%" == "" if "%APPVEYOR_REPO_BRANCH%" == "master" bash.exe deploy/deploy.sh
