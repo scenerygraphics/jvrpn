@@ -48,5 +48,6 @@ script:
 after_success:
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then killall -9 gpg-agent; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export GPG_TTY=`tty`; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gpg-agent; fi
 - deploy/before-deploy.sh
 - deploy/deploy.sh
