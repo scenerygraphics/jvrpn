@@ -38,7 +38,7 @@ before_build:
   - cmake -G "Visual Studio 14 2015 Win64" .. -DVRPN_BUILD_SERVERS=0
 
 build:
-  project: vrpn.sln
+  project: external\vrpn\build\vrpn.sln
 
 after_build:
   - mvn clean package
