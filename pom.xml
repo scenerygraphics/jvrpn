@@ -11,7 +11,7 @@
 
     <groupId>graphics.scenery</groupId>
     <artifactId>jvrpn</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>VRPN bindings for the JavaVM</name>
 
