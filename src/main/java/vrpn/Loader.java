@@ -1,16 +1,15 @@
 package vrpn;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 
 /**
  * Created by ulrik on 11/14/2016.
@@ -18,6 +17,12 @@ import java.util.stream.Collectors;
 public class Loader {
 
     static boolean nativesReady = false;
+    static final String projectName = "jvrpn";
+    static final String libraryNameWindows = "java_vrpn.dll";
+    static final String libraryNameLinux = "libjava_vrpn.so";
+    static final String libraryNameMacOS = "libjava_vrpn.jnilib";;
+    static final Logger logger = LoggerFactory.getLogger("Loader(" + projectName + ")");
+
     enum Platform { UNKNOWN, WINDOWS, LINUX, MACOS }
 
     public static Platform getPlatform() {
@@ -39,7 +44,7 @@ public class Loader {
             File[] files = new File(System.getProperty("java.io.tmpdir")).listFiles();
 
             for (File file : files) {
-                if (file.isDirectory() && file.getName().contains("vrpn-natives-tmp")) {
+                if (file.isDirectory() && file.getName().contains(projectName + "-natives-tmp")) {
                     File lock = new File(file, ".lock");
 
                     // delete the temporary directory only if the lock does not exist
@@ -48,11 +53,12 @@ public class Loader {
                                 .map(Path::toFile)
                                 .sorted((f1, f2) -> -f1.compareTo(f2))
                                 .forEach(File::delete);
+                        logger.debug("Deleted leftover temp directory for " + projectName + " at " + file);
                     }
                 }
             }
         } catch(NullPointerException | IOException e) {
-            System.err.println("Unable to delete leftover temporary directories: " + e);
+            logger.error("Unable to delete leftover temporary directories: " + e);
             e.printStackTrace();
         }
     }
@@ -63,7 +69,7 @@ public class Loader {
         }
 
         String lp = System.getProperty("java.library.path");
-        File tmpDir = Files.createTempDirectory("vrpn-natives-tmp").toFile();
+        File tmpDir = Files.createTempDirectory(projectName + "-natives-tmp").toFile();
 
         File lock = new File(tmpDir, ".lock");
         lock.createNewFile();
@@ -76,42 +82,70 @@ public class Loader {
 
         switch(getPlatform()) {
             case WINDOWS:
-                libraryName = "java_vrpn.dll";
+                libraryName = libraryNameWindows;
                 classifier = "natives-windows";
                 break;
             case LINUX:
-                libraryName = "libjava_vrpn.so";
+                libraryName = libraryNameLinux;
                 classifier = "natives-linux";
                 break;
             case MACOS:
-                libraryName = "libjava_vrpn.jnilib";
+                libraryName = libraryNameMacOS;
                 classifier = "natives-macos";
                 break;
             default:
-                System.err.println("jvrpn is not supported on this platform.");
+                logger.error(projectName + " is not supported on this platform.");
                 classifier = "none";
                 libraryName = "none";
         }
 
         String[] jars;
+        System.err.println("Looking for library " + libraryName);
 
         // FIXME: This incredibly ugly workaround here is needed due to the way ImageJ handles it's classpath
         // Maybe there's a better way?
-        if(System.getProperty("java.class.path").toLowerCase().contains("imagej-launcher")) {
-            URL res = Thread.currentThread().getContextClassLoader().getResource(libraryName);
-            if(res == null && getPlatform() == Platform.MACOS) {
-                res = Thread.currentThread().getContextClassLoader().getResource("libjava_vrpn.dylib");
+        if(System.getProperty("java.class.path").toLowerCase().contains("imagej-launcher") || System.getProperty(projectName + ".useContextClassLoader") != null) {
+            Enumeration<URL> res = Thread.currentThread().getContextClassLoader().getResources(libraryName);
+            if(!res.hasMoreElements() && getPlatform() == Platform.MACOS) {
+                res = Thread.currentThread().getContextClassLoader().getResources(libraryNameMacOS.substring(0, libraryNameMacOS.indexOf(".")) + ".dylib");
             }
 
-            if(res == null) {
-                System.err.println("ERROR: Could not find jvrpn libraries.");
-                return;
-            }
+            if(!res.hasMoreElements()) {
+                logger.warn("ERROR: Could not find " + projectName + " libraries using context class loader, falling back to manual method.");
+                jars = System.getProperty("java.class.path").split(File.pathSeparator);
+            } else {
 
-            String jar = res.getPath();
-            jar = jar.substring(jar.indexOf("file:/") + 6);
-            jar = jar.substring(0, jar.indexOf("!") - 4) + "-" + classifier + ".jar";
-            jars = jar.split(File.pathSeparator);
+                String jar = "";
+                while (res.hasMoreElements()) {
+                    String p = res.nextElement().getPath();
+                    if (p.contains("-natives-")) {
+                        jar = p;
+                        break;
+                    }
+                }
+
+                if (jar.length() == 0) {
+                    logger.error("ERROR: Could not find " + projectName + " libraries, no matching JARs detected.");
+                    return;
+                }
+
+                // on Windows, file URLs are stated as file:///, on OSX and Linux only as file:/
+                int pathOffset = 5;
+
+                if (getPlatform() == Platform.WINDOWS) {
+                    pathOffset = 6;
+                }
+
+                jar = jar.substring(jar.indexOf("file:/") + pathOffset);
+
+                if (jar.contains(classifier)) {
+                    jar = jar.substring(0, jar.indexOf("!"));
+                } else {
+                    jar = jar.substring(0, jar.indexOf("!") - 4) + "-" + classifier + ".jar";
+                }
+
+                jars = jar.split(File.pathSeparator);
+            }
         } else {
             jars = System.getProperty("java.class.path").split(File.pathSeparator);
         }
@@ -119,7 +153,7 @@ public class Loader {
         for(int i = 0; i < jars.length; i ++) {
             String s = jars[i];
 
-            if(!(s.contains("jvrpn") && s.contains("natives"))) {
+            if(!(s.contains(projectName) && s.contains("natives"))) {
                 continue;
             }
 
@@ -132,13 +166,16 @@ public class Loader {
 
                     // only extract library files
                     String extension = entry.getName().substring(entry.getName().lastIndexOf('.') + 1);
-                    if (!(extension.startsWith("so") || extension.startsWith("dll") || extension.startsWith("dylib") || extension.startsWith("jnilib"))) {
+                    if (!(extension.startsWith("so") || extension.startsWith("dll") || extension.startsWith("dylib") || extension.startsWith("jnilib")) && !entry.isDirectory()) {
+                        logger.debug("SKIPPED file " + entry.getName());
                         continue;
                     }
 
                     File f = new File(tmpDir.getAbsolutePath() + File.separator + entry.getName());
+                    logger.debug("Reading and extracting " + entry.getName() + " to " + f.toString());
 
                     if (entry.isDirectory()) {
+                        logger.debug("Creating new directory");
                         f.mkdir();
                         continue;
                     }
@@ -164,33 +201,32 @@ public class Loader {
 
                 System.setProperty("java.library.path", lp + File.pathSeparator + tmpDir.getCanonicalPath());
             } catch (IOException e) {
-                System.err.println("Failed to extract native libraries: " + e.getMessage());
+                logger.error("Failed to extract native libraries: " + e.getMessage());
                 e.printStackTrace();
             }
         }
 
-        lp = System.getProperty("java.library.path");
-        System.setProperty("java.library.path", lp + File.pathSeparator + new java.io.File( "." ).getCanonicalPath() + File.separator + "src" + File.separator + "natives");
+        String libraryPath = new java.io.File( "." ).getCanonicalPath()
+                + File.separator + "target"
+                + File.separator + "classes"
+                + File.separator + libraryName;
 
-        try {
-            Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
-            fieldSysPath.setAccessible(true);
-            fieldSysPath.set(null, null);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            System.err.println("Failed to set java.library.path: " + e.getMessage());
-            e.printStackTrace();
+        // we try local path first, in case we're running on the CI
+        if(!new File(libraryPath).exists()) {
+            libraryPath = tmpDir + File.separator + libraryName;
         }
 
         try {
-            System.loadLibrary("java_vrpn");
+            System.load(libraryPath);
         } catch (UnsatisfiedLinkError e) {
-            System.err.println("Unable to load native library: " + e.getMessage());
+            logger.error("Unable to load native library: " + e.getMessage());
             String osname = System.getProperty("os.name");
             String osclass = osname.substring(0, osname.indexOf(' ')).toLowerCase();
 
-            System.err.println("Did you include jvrpn-natives-" + osclass + " in your dependencies?");
+            logger.error("Did you include " + projectName + "-natives-" + osclass + " in your dependencies?");
         }
 
+        logger.debug("Successfully loaded native library for " + projectName + " from " + libraryPath);
         nativesReady = true;
     }
 }

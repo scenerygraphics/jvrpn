@@ -24,7 +24,6 @@ install:
   - cmd: SET JAVA_OPTS=-Xmx2g
   - cmd: mvn --version
   - cmd: java -version
-  - cmd: choco install swig
   - ps: .\deploy\install-gnupg.ps1
   - cmd: nuget install secure-file -ExcludeVersion
   - cmd: SET PATH=C:\gnupg2;%PATH%
@@ -47,6 +46,7 @@ after_build:
 on_success:
   - cmd: SET PATH=C:\gnupg2;%PATH%
   - ps: $env:Path += ";C:\gnupg2"
+  - cmd: unzip -l target/jvrpn-*-natives-*.jar
   - cmd: if "%APPVEYOR_PULL_REQUEST_TITLE%" == "" if "%APPVEYOR_REPO_BRANCH%" == "master" secure-file\tools\secure-file -decrypt deploy\codesigning-appveyor.asc.enc -secret "%CERTIFICATE_KEY%"
   - cmd: if "%APPVEYOR_PULL_REQUEST_TITLE%" == "" if "%APPVEYOR_REPO_BRANCH%" == "master" gpg2 --fast-import deploy/codesigning-appveyor.asc
   - cmd: if "%APPVEYOR_PULL_REQUEST_TITLE%" == "" if "%APPVEYOR_REPO_BRANCH%" == "master" bash.exe deploy/deploy.sh
