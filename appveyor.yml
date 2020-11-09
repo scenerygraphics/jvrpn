@@ -24,7 +24,6 @@ install:
   - cmd: SET JAVA_OPTS=-Xmx2g
   - cmd: mvn --version
   - cmd: java -version
-  - cmd: choco install swig
   - ps: .\deploy\install-gnupg.ps1
   - cmd: nuget install secure-file -ExcludeVersion
   - cmd: SET PATH=C:\gnupg2;%PATH%
