@@ -9,7 +9,7 @@ env:
 matrix:
   include:
   - os: linux
-    jdk: oraclejdk8
+    jdk: openjdk8
     sudo: false
     addons:
       apt:
