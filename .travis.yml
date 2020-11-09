@@ -13,29 +13,29 @@ matrix:
     sudo: false
     addons:
       apt:
-        sources:
-        - sourceline: ppa:george-edison55/precise-backports
-        - sourceline: ppa:ubuntu-toolchain-r/test
-        - llvm-toolchain-precise-3.6
         packages:
         - cmake
         - cmake-data
-        - clang-3.6
+        - clang-3.8
         - gnupg2
+        - openjdk-8-jdk-headless
   - os: osx
-    osx_image: xcode7.3
+    osx_image: xcode9.3
+addons:
+  homebrew:
+    packages:
+      - gnupg2
+      - swig
+    update: true
 cache:
   directories:
   - "$HOME/.m2"
 install:
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew unlink gnupg; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gnupg2; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then /usr/libexec/java_home -V; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "UPDATESTARTUPTTY" | gpg-connect-agent > /dev/null 2>&1; fi
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export COMPILER=clang++-3.6; fi
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=clang++-3.6; fi
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CC=clang-3.6; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export COMPILER=clang++-3.8; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=clang++-3.8; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CC=clang-3.8; fi
 - git submodule init
 - git submodule update
 script:
@@ -44,12 +44,14 @@ script:
 - cmake .. -DVRPN_BUILD_SERVERS=0
 - cmake --build . --config Release
 - cd ../../../
-- mvn package
+- mvn -B package
 after_success:
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then killall -9 gpg-agent; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export GPG_TTY=`tty`; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gpg-agent; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PINENTRY_MODE="--pinentry-mode=loopback"; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf; fi
+- killall -9 gpg-agent
+- export GPG_TTY=`tty`
+- gpg-agent
+- export PINENTRY_MODE="--pinentry-mode=loopback"
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ln -s `which gpg` /usr/local/bin/gpg2; fi
 - unzip -l target/jvrpn-*-natives-*.jar
 - deploy/before-deploy.sh
 - deploy/deploy.sh
