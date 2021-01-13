@@ -41,7 +41,7 @@
         <connection>scm:git:git://github.com/scenerygraphics/jvrpn</connection>
         <developerConnection>scm:git:git@github.com:scenerygraphics/jvrpn</developerConnection>
         <tag>HEAD</tag>
-        <url>http://scenery.graphics</url>
+        <url>https://github.com/scenerygraphics/jvrpn</url>
     </scm>
     <issueManagement>
         <system>GitHub</system>
