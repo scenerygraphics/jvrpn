@@ -49,7 +49,7 @@
     </issueManagement>
     <ciManagement>
         <system>Travis</system>
-        <url>https://travis-ci.org/scenerygraphics/jvrpn/</url>
+        <url>https://github.com/scenerygraphics/jvrpn/actions</url>
     </ciManagement>
 
     <licenses>
