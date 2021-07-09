@@ -1,3 +1,5 @@
+[![](https://github.com/scenerygraphics/jvrpn/actions/workflows/build-main.yml/badge.svg)](https://github.com/scenerygraphics/jvrpn/actions/workflows/build-main.yml)
+
 # Mavenized VRPN
 
 This is a distribution of VRPN's Java part that can be used in a  Maven project on Windows, OS X and Linux.
